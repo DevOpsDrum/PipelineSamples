@@ -8,7 +8,7 @@
     [Object[]]
     | path | value |
     | ---- | ----- |
-    | $Hashtable.propertyOne | 12345
+    | $Hashtable.propertyOne | 12345 |
     | $Hashtable.PropertyTwo.Level2 | ABCDEFT |
     
 .NOTES
