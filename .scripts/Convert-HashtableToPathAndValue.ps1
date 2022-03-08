@@ -1,17 +1,17 @@
 <#
 .DESCRIPTION
-    Convert hashtable into single-level Object[] with property name path and value
+    Convert hashtable into single-level Object[] with element name path and value
 .EXAMPLE
     PS> .pipelines/scripts/Convert-HashtableToPathAndValue.ps1 `
         -Hashtable (Get-Content -Raw -Path "${HOME}/repos/myRepo/myConfig.yaml" | ConvertFrom-Yaml)
-    Iterate through hashtable and create single-level Object[] with property name path and value, e.g. $Hashtable.propertyOne = 12345
+    Iterate through hashtable and create single-level Object[] with element name path and value, e.g. $Hashtable.elementOne = 12345
 .OUTPUTS
     [Object[]]
     * e.g.
         | Name                          | Value   |
         | ----------------------------- | ------- |
-        | $Hashtable.propertyOne        | 12345   |
-        | $Hashtable.PropertyTwo.Level2 | ABCDEFG |
+        | $Hashtable.elementOne        | 12345   |
+        | $Hashtable.elementTwo.Level2 | ABCDEFG |
 .NOTES
     * Script is intended to create an object that can be used to compare JSON or YAML objects, like two config files
     * Convert JSON file:
@@ -32,25 +32,25 @@
 param(
     [Parameter(HelpMessage = 'Hashtable object to be converted', ValueFromPipeline)]
     [ValidateNotNullOrEmpty()]
-    [Hashtable] $Hashtable = (Get-Content -Raw -Path "${HOME}/repos/RP-Config/deploy/int-config.yaml" | ConvertFrom-Yaml)
+    [Hashtable] $Hashtable = (Get-Content -Raw -Path "${HOME}/repos/myRepo/myConfig.json" | ConvertFrom-Yaml)
 )
 
 begin {
     $queue = @('$Hashtable') # initalize queue with hashtable object, in single quotes (literal)
-    $output = @{} # output hashtable with property and value hashtables
+    $output = @{} # output hashtable with element and value hashtables
     $complete = $false # while loop trigger
     
     <#
     .DESCRIPTION
         Helper function to save path and value to $output hashtable
     .EXAMPLE
-        Add-ToOutput -Path '$Hashtable.myProperty.thing' -Value '12345'
+        Add-ToOutput -Path '$Hashtable.myelement.thing' -Value '12345'
     #>
     function Add-ToOutput {
         [CmdletBinding()]
         [OutputType([System.Void])]
         param(
-            [Parameter(HelpMessage = 'Property path, e.g. $base.myProperty.thing')]
+            [Parameter(HelpMessage = 'element path, e.g. $base.myelement.thing')]
             [string] $Path,
             [Parameter(HelpMessage = 'Value, e.g. "12345')]
             [string] $Value
@@ -138,6 +138,6 @@ process {
 }
 
 end {
-    # return single-level Object[] with property name path and value
+    # return single-level Object[] with element name path and value
     return $output.GetEnumerator() | Sort-Object -Property Name
 }
